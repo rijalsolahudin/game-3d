@@ -163,3 +163,75 @@ uv run python scripts/audit_osm.py                                   # tulis doc
 
 Turunan database OSM (footprint, jaringan jalan hasil olahan) wajib diberi atribusi dan dibagikan serupa sesuai ODbL (NFR-06).
 Unduhan GAME-6: Overpass API, 2026-11-20, basis OSM 2026-11-20T21:23:29Z.
+
+## GAME-16: heightmap per chunk
+
+```
+uv run python scripts/build_heightmaps.py                      # DEM = satu-satunya .tif di data/raw/dem/copernicus
+uv run python scripts/build_heightmaps.py --dem path/demnas.tif --no-smooth
+uv run python scripts/build_heightmaps.py --resolution 513 --margin-chunks 2 --smooth-sigma-m 8
+```
+
+Keluaran di `data/out/heightmaps/` (gitignore, dibuat ulang dari skrip): `index.json`, `<id>.raw`, `<id>.json`
+(id = `"{x}_{z}"`, mis. `-3_2`). Menjalankan ulang menghapus file heightmap lama di folder itu dan menghasilkan
+output byte-identik. Semua JSON divalidasi terhadap `schemas/heightmap_index.schema.json` dan
+`schemas/heightmap_chunk.schema.json` sebelum ada file ditulis. Validator memakai subset JSON Schema buatan
+sendiri (`terrain/schema_check.py`; keyword tak dikenal melempar error) agar tidak menambah dependensi `jsonschema`;
+skemanya tetap JSON Schema valid. GAME-17 menambah `jsonschema` sebagai dependensi; konsolidasi ke satu validator
+(`jsonschema`) adalah follow-up setelah kedua task di-merge.
+
+Penggantian output atomik: hasil ditulis ke `<out>.tmp`, lalu folder diganti lewat rename setelah semua sukses
+(build gagal tidak mengubah output lama). `--out` yang berisi file bukan milik output heightmap (tanpa `index.json`
+valid, atau ada file lain) ditolak dengan pesan jelas. Input divalidasi: batas harus Polygon/MultiPolygon valid;
+tinggi sampel DEM di luar `valid_height_min_m..valid_height_max_m` (default -500..9000 m) menggagalkan build.
+
+### Format RAW (untuk importer Unity GAME-18)
+
+- File `<id>.raw`: `resolution x resolution` sampel (default **257 x 257**), **uint16 little-endian**, tanpa header.
+- Urutan: **baris 0 = tepi selatan (z minimum), kolom 0 = tepi barat (x minimum)**, baris demi baris ke utara
+  (`heights[z, x]` seperti `TerrainData.SetHeights`). Importer RAW bawaan Unity: Byte Order = Windows,
+  Depth = 16 bit, Resolution = 257, **Flip Vertically TIDAK dicentang** (baris 0 = selatan = `heights[0, *]`).
+  Catatan: importer bawaan menormalisasi dengan 1/65536 (bukan 1/65535; selisih ~2,4 mm) dan Unity menyimpan tinggi
+  ~15-bit (presisi efektif ~4,7 mm). Importer `System.IO` buatan sendiri memakai `height_formula` di `index.json`.
+- Jarak sampel = 256 / (resolution - 1) m (default 1 m). Sampel `[row, col]` ada di (x, z) lokal =
+  `(cx*256 + col*spacing, cz*256 + row*spacing)`. Baris/kolom terakhir (indeks 256) adalah sampel yang sama persis
+  dengan baris/kolom pertama chunk tetangga (utara/timur): nilai dihitung sekali pada lattice global lalu dipotong,
+  jadi tidak ada seam. Di Unity: `heightmapResolution = 257`, `size.x = size.z = 256` (1 sampel = 1 m).
+- **Skala tinggi global** (sama untuk semua chunk; ada di `index.json` dan tiap `<id>.json`):
+  `height_m = height_min_m + raw / 65535 * (height_max_m - height_min_m)`. Rentang = min/max seluruh area yang ditulis
+  + padding (`height_padding_m`, default 1 m); resolusi tinggi ~2,4 mm untuk rentang 155 m.
+  Unity: `terrainData.size.y = height_max_m - height_min_m`, posisi Y terrain = `height_min_m`
+  (Y dunia = elevasi di atas datum DEM; belum ada offset elevasi origin, usulan: tetap elevasi absolut).
+  `min_height_m`/`max_height_m` per chunk (meter, sebelum kuantisasi) berguna untuk bounds/culling.
+- Cakupan: chunk yang beririsan dengan `data/boundary.geojson` + `margin_chunks` (default 1) di sekeliling (kabut/horizon).
+  `index.json.chunks` adalah daftar resmi (bbox bisa memuat sel kosong di pojok yang tidak ditulis).
+
+### Metode
+
+1. Lattice global x = i*spacing, z = k*spacing (i, k bilangan bulat) di koordinat lokal (`geo.projection`); tiap titik
+   -> lon/lat -> piksel DEM (CRS dibaca dari file; bila bukan EPSG:4326 diteruskan via pyproj).
+2. Interpolasi **bikubik Catmull-Rom**; titik di luar DEM atau nodata -> `CoverageError` (tidak diisi diam-diam).
+3. **Gaussian** ringan (`smooth_sigma_m`, default 12 m; `--no-smooth` mematikan) pada seluruh lattice global dengan halo,
+   SEBELUM dipotong per chunk, untuk meredam kotak-kotak upsampling 30 m dan puncak pohon DSM.
+4. Kuantisasi uint16 dengan rentang global, lalu potong per chunk. Semua parameter ada di `terrain/config.py`.
+
+### Akurasi vs DEM asli (Copernicus, 300 titik acak dalam +-1300 m; selisih terhadap bilinear DEM asli)
+
+Kriteria (usulan): konfigurasi default (sigma 12 m), >= 300 titik acak di chunk dalam cakupan, p95 < 1 m dan
+maks < 2,5 m. Terpenuhi (p95 0,42 m, maks 2,16 m); dijaga test `test_real_dem_default_config_accuracy`
+(di-skip bila DEM tidak ada). Baris lain hanya pembanding.
+
+| smoothing | selisih maks | rata-rata | p95 | titik > 1 m |
+|---|---|---|---|---|
+| mati (sigma 0) | 1,75 m | 0,33 m | 0,84 m | 2,3 % |
+| sigma 6 m | 1,34 m | 0,25 m | 0,70 m | 0,7 % |
+| sigma 12 m (default) | 2,16 m | 0,17 m | 0,42 m | 0,3 % |
+
+Selisih > 1 m di sebagian kecil titik BUKAN dari smoothing semata: bahkan tanpa smoothing, bikubik berbeda dari
+bilinear di lereng tajam/lembah sempit DSM 30 m (bikubik lebih halus dan boleh overshoot). Bilinear murni cocok
+persis tetapi menghasilkan permukaan berfaset 30 m. Pada DEM sintetis landai selisih < 1 m (ada di test).
+
+### Modul
+
+`terrain/{config,dem,smooth,chunk_select,build,schema_check}.py`, skrip `scripts/build_heightmaps.py`,
+test `tests/test_heightmaps.py` (DEM sintetis; test DEM asli di-skip bila `data/raw/dem/copernicus/*.tif` tidak ada).

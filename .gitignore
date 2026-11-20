@@ -64,5 +64,8 @@ __pycache__/
 pipeline/data/raw/*
 !pipeline/data/raw/.gitkeep
 
+# --- Pipeline output turunan (heightmap, dll.; dibuat ulang dari skrip) ---
+pipeline/data/out/
+
 # --- Claude Code worktrees subagent ---
 .claude/worktrees/
