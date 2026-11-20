@@ -72,7 +72,7 @@ Setiap milestone selesai bila **semua checklist tercentang dan Definition of Don
 - [ ] `[QA]` Playtest rasa berkendara (minimal 5 orang), catat tuning
 
 ### 1.6 Backend Dasar
-- [ ] `[Server]` Fastify + TS strict + Zod + Swagger + Pino, struktur `modules/` (ARC §6)
+- [x] `[Server]` Fastify + TS strict + Zod + Swagger + Pino, struktur `modules/` (ARC §6)
 - [ ] `[Server]` Skema Drizzle + migrasi semua tabel ARC §5, seed dunia Tumanggal & `vehicle_models`
 - [ ] `[Server]` Auth: register, login, refresh rotasi, logout (Argon2id, JWT)
 - [ ] `[Server]` `GET /me`, `GET /me/save`, `GET /worlds/:slug`

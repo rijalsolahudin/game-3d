@@ -61,3 +61,6 @@ __pycache__/
 # --- Pipeline data mentah (besar, sumber eksternal) ---
 pipeline/data/raw/*
 !pipeline/data/raw/.gitkeep
+
+# --- Claude Code worktrees subagent ---
+.claude/worktrees/
