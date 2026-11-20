@@ -25,9 +25,19 @@ Pemilik produk memutuskan pada 2026-11-21:
 2. **Gang, jalan setapak, sawah, kebun, dan irigasi didigitasi manual di OSM** oleh tim, memakai editor iD/JOSM. Tracing hanya boleh di atas citra yang lisensinya mengizinkan tracing untuk OSM (layer yang disetujui di editor OSM). Pipeline kemudian mengambilnya lewat unduhan OSM biasa.
 3. **DuckDB** ditambahkan ke pipeline, **hanya** sebagai dependensi grup opsional `buildings-ref` di `pipeline/pyproject.toml`, untuk membaca GeoParquet jarak jauh. DuckDB tidak dipakai di server maupun client, dan bukan pengganti PostgreSQL.
 
+## Tambahan 2026-11-21: jalan penghubung otomatis
+
+Digitasi manual di OSM ternyata terlalu sulit bagi tim saat ini. Contohnya, Jl. Pagersari Tumanggal di dunia nyata menyambung ke Jl. Raya Tumanggal, tetapi di OSM ruas itu terputus. Pemilik produk memutuskan:
+
+1. Pipeline membuat **jalan penghubung otomatis** (`source: generated`):
+   - Ujung jalan buntu yang dekat dengan jalan lain disambung lewat jalur paling landai di terrain.
+   - Kelompok bangunan yang jauh dari jalan diberi gang ke jalan terdekat.
+2. Jalan generated hanyalah perkiraan, bukan hasil tracing citra, sehingga tidak ada masalah lisensi citra. Jalan ini otomatis tidak dibuat lagi bila data OSM di lokasi itu sudah tersedia (digitasi GAME-54 tetap terbuka bila ada relawan).
+3. Bangunan Google Open Buildings diatribusikan dengan opsi lisensi **ODbL**, sama dengan OSM dan Microsoft.
+
 ## Lisensi dan atribusi
 
-- Google Open Buildings v3: CC BY 4.0 atau ODbL (dual license).
+- Google Open Buildings v3: CC BY 4.0 atau ODbL (dual license); proyek ini memakai opsi **ODbL**.
 - Microsoft Global ML Building Footprints: ODbL.
 - OSM: ODbL.
 

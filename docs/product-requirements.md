@@ -102,7 +102,7 @@ Draft sebelumnya merujuk ke "kuesioner" tanpa menuliskan jawabannya. Bagian ini 
 | NFR-03 | Memori | Penggunaan RAM ≤ 4 GB, VRAM ≤ 2 GB pada preset Medium. |
 | NFR-04 | Ketahanan data | Tidak ada kehilangan progres lebih dari 60 detik permainan saat crash/putus koneksi. |
 | NFR-05 | Keamanan | Password di-hash (Argon2id), seluruh trafik via HTTPS, token akses berumur pendek. |
-| NFR-06 | Lisensi data | Data peta mengikuti lisensi sumbernya (mis. atribusi OpenStreetMap ODbL, Google Open Buildings CC BY 4.0, Microsoft ML Building Footprints ODbL, dan Copernicus DEM ditampilkan di kredit). Digitasi manual ke OSM hanya boleh men-trace citra yang lisensinya mengizinkan tracing untuk OSM. Citra satelit berlisensi terbatas hanya dipakai sebagai referensi modeling, bukan tekstur. |
+| NFR-06 | Lisensi data | Data peta mengikuti lisensi sumbernya (mis. atribusi OpenStreetMap ODbL, Google Open Buildings (ODbL), Microsoft ML Building Footprints ODbL, dan Copernicus DEM ditampilkan di kredit). Digitasi manual ke OSM hanya boleh men-trace citra yang lisensinya mengizinkan tracing untuk OSM. Citra satelit berlisensi terbatas hanya dipakai sebagai referensi modeling, bukan tekstur. |
 | NFR-07 | Privasi | Tidak menampilkan nama pemilik rumah pribadi atau data pribadi warga; bangunan pribadi diberi label generik. Persetujuan pemerintah desa untuk publikasi landmark. |
 | NFR-08 | Skalabilitas konten | Menambah wilayah baru cukup lewat pipeline data + Addressables tanpa mengubah kode inti. |
 | NFR-09 | Aksesibilitas | Subtitle/teks berukuran dapat diatur, opsi colorblind untuk penanda peta, remap kontrol. |
