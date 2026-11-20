@@ -18,7 +18,7 @@ Stack di bawah dipilih untuk game open world semi-realistis dengan fisika kendar
 | Render pipeline | **URP** (Universal Render Pipeline) | Performa baik di GPU kelas menengah (spesifikasi minimum PRD §6), tetap mendukung tampilan semi-realistis. GPU Resident Drawer + GPU occlusion culling untuk dunia padat objek. |
 | Streaming aset | **Addressables** | Memuat/melepas konten per chunk dunia, mendukung remote content catalog untuk menambah wilayah tanpa build ulang. |
 | Input | **Input System** (package baru) | Keyboard-mouse dan gamepad dengan satu action map, mendukung remap. |
-| Kamera | **Cinemachine 3** | Kamera third-person & kamera kendaraan dengan transisi halus. |
+| Kamera | **Cinemachine 3** | Kamera third-person & kamera kendaraan dengan transisi halus. Di Unity 6.6 memakai package bawaan editor (versi 6.6.x, API Cinemachine 3 `Unity.Cinemachine`). |
 | UI / HUD | **UI Toolkit** (UXML + USS), TextMeshPro untuk teks dunia | Data binding runtime, performa lebih baik dari uGUI untuk HUD kompleks. |
 | Jalan | **Unity Splines** | Jalan desa dibangun dari polyline OSM. |
 | Terrain | Unity Terrain (heightmap per tile) | Kontur dari DEM. |
@@ -62,11 +62,12 @@ Stack di bawah dipilih untuk game open world semi-realistis dengan fisika kendar
 | Tahap | Alat | Output |
 |---|---|---|
 | Jalan, sungai, footprint bangunan, landuse | **OpenStreetMap** via Overpass API / ekspor `.osm.pbf` | GeoJSON |
-| Kontur tanah | **DEMNAS** (BIG, resolusi ±8 m) | GeoTIFF → heightmap RAW 16-bit |
+| Kontur tanah | **DEMNAS** (BIG, resolusi ±8 m). Sementara memakai **Copernicus GLO-30** (±30 m, unduh otomatis tanpa login) sampai DEMNAS diunduh | GeoTIFF → heightmap RAW 16-bit |
+| Footprint bangunan pelengkap | **Google Open Buildings v3** (CC BY 4.0 / ODbL) + **Microsoft ML Building Footprints** (ODbL), dibaca dari GeoParquet via **DuckDB** (ADR-0003). Dipakai hanya bila tidak tumpang tindih dengan OSM | Layer terpisah dengan atribut `source` |
 | Referensi visual | Foto survei lapangan, Mapillary (CC BY-SA), citra satelit (hanya referensi) | Folder referensi per bangunan |
 | Proyeksi | **GDAL/ogr2ogr**, proyeksi **UTM zona 49S (EPSG:32749)** lalu dikonversi ke koordinat lokal relatif titik origin | Koordinat meter |
 | Modeling | **Blender** (+ add-on Blosm untuk impor OSM), modeling manual Tier A | `.fbx` / `.glb` |
-| Otomasi | Python 3 (`uv`), skrip di `pipeline/` | Data siap impor Unity |
+| Otomasi | Python 3 (`uv`), skrip di `pipeline/`; pyproj, shapely, rasterio (GDAL), DuckDB opsional (ADR-0003) | Data siap impor Unity |
 
 ### 1.5 Infrastruktur & DevOps
 
@@ -126,7 +127,8 @@ flowchart LR
 - **1 unit Unity = 1 meter.** Sumbu: X = timur, Z = utara, Y = atas.
 - Origin dunia = titik awal Desa Tumanggal (koordinat WGS84 disimpan di `worlds.origin`). Semua data geografis diproyeksikan ke UTM 49S lalu dikurangi koordinat origin.
   - **Origin saat ini (SEMENTARA):** lat **-7.3486842**, lng **109.4868011** (UTM 49S 332973.86 E, 9187422.85 N), yaitu titik jalan terdekat dari node desa OSM `node/1308706192`. Sumber data: `pipeline/data/origin.json`.
-  - **Batas saat ini (SEMENTARA):** lingkaran radius 1500 m di sekitar node desa (±7,07 km²), di `pipeline/data/boundary.geojson`. OSM tidak punya polygon batas desa. Keduanya wajib diganti dengan peta batas resmi desa dan titik depan balai desa **sebelum pipeline chunk dibangun (GAME-16/17)**, karena mengganti origin berarti menghitung ulang semua koordinat dunia.
+  - **Utara grid:** sumbu Z mengikuti utara grid UTM 49S, bukan utara sejati. Di Tumanggal selisihnya sekitar 0,19° (konvergensi meridian), dan faktor skala sekitar 0,999945. Kompas atau minimap yang menampilkan utara sejati wajib mengoreksi selisih ini.
+- **Batas saat ini (SEMENTARA):** lingkaran radius 1500 m di sekitar node desa (±7,07 km²), di `pipeline/data/boundary.geojson`. OSM tidak punya polygon batas desa. Keduanya wajib diganti dengan peta batas resmi desa dan titik depan balai desa **sebelum pipeline chunk dibangun (GAME-16/17)**, karena mengganti origin berarti menghitung ulang semua koordinat dunia.
 - Dunia dibagi **grid chunk 256 × 256 m**, ID chunk = `"{x}_{z}"` (indeks integer dari origin).
 - Radius aktif: chunk dalam 2 ring di sekitar pemain dimuat penuh; ring ke-3 dimuat versi LOD rendah; sisanya dilepas.
 - Cakupan MVP < 5 km dari origin sehingga **floating origin belum diperlukan**. Wajib diterapkan sebelum wilayah melebihi ±8 km dari origin.
@@ -402,6 +404,7 @@ erDiagram
 │  │  ├─ Art/{Characters,Vehicles,Buildings,Environment,Materials}/
 │  │  ├─ Prefabs/
 │  │  ├─ Scenes/{Boot,Menu,World}.unity
+│  │  ├─ Editor/                 # Game.Editor (khusus Editor): BuildScript, importer peta
 │  │  ├─ Settings/               # URP asset, Input Actions, ScriptableObject config
 │  │  ├─ UI/                     # UXML, USS
 │  │  └─ Tests/{EditMode,PlayMode}/

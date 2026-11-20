@@ -61,7 +61,7 @@ Draft sebelumnya merujuk ke "kuesioner" tanpa menuliskan jawabannya. Bagian ini 
 | # | Keputusan | Nilai | Status |
 |---|---|---|---|
 | D1 | Cakupan peta MVP | Batas administratif Desa Tumanggal, ditambah buffer ±200 m untuk jalan penghubung. Di luar batas: dinding tak terlihat + kabut jarak jauh. | Usulan |
-| D2 | Tingkat kemiripan bangunan | **3 tier**: *Tier A* landmark (masjid, balai desa, sekolah, ±10–20 bangunan) dimodelkan manual dengan referensi foto; *Tier B* bangunan di tepi jalan utama, modular dengan proporsi & warna dari survei; *Tier C* bangunan lain, procedural dari footprint OSM. | Usulan |
+| D2 | Tingkat kemiripan bangunan | **3 tier**: *Tier A* landmark (masjid, balai desa, sekolah, ±10–20 bangunan) dimodelkan manual dengan referensi foto; *Tier B* bangunan di tepi jalan utama, modular dengan proporsi & warna dari survei; *Tier C* bangunan lain, procedural dari footprint OSM. Sampai survei lapangan selesai, semua bangunan sementara diperlakukan sebagai Tier C di posisi footprint asli. Footprint diambil dari OSM, lalu dilengkapi Google Open Buildings/Microsoft untuk bangunan yang belum ada di OSM (ADR-0003). Gang, jalan setapak, sawah, dan kebun didigitasi manual di OSM. | Usulan |
 | D3 | Karakter yang wajib faceless | **Semua** karakter humanoid (pemain dan NPC bila ditambahkan). | Usulan |
 | D4 | Tingkat detail mata | **Menengah**: bentuk dasar + iris + pupil + highlight, animasi kedip & arah pandang. Tanpa alis, bulu mata, atau ekspresi kompleks. | Ditetapkan (dari aturan proyek lama) |
 | D5 | Mekanisme perolehan kendaraan | Motor bebek diberikan di awal (tutorial). Mobil terbuka setelah pemain menemukan ≥ 50% lokasi Tier A. Tanpa mata uang. | Usulan |
@@ -102,7 +102,7 @@ Draft sebelumnya merujuk ke "kuesioner" tanpa menuliskan jawabannya. Bagian ini 
 | NFR-03 | Memori | Penggunaan RAM ≤ 4 GB, VRAM ≤ 2 GB pada preset Medium. |
 | NFR-04 | Ketahanan data | Tidak ada kehilangan progres lebih dari 60 detik permainan saat crash/putus koneksi. |
 | NFR-05 | Keamanan | Password di-hash (Argon2id), seluruh trafik via HTTPS, token akses berumur pendek. |
-| NFR-06 | Lisensi data | Data peta mengikuti lisensi sumbernya (mis. atribusi OpenStreetMap ODbL ditampilkan di kredit). Citra satelit berlisensi terbatas hanya dipakai sebagai referensi modeling, bukan tekstur. |
+| NFR-06 | Lisensi data | Data peta mengikuti lisensi sumbernya (mis. atribusi OpenStreetMap ODbL, Google Open Buildings CC BY 4.0, Microsoft ML Building Footprints ODbL, dan Copernicus DEM ditampilkan di kredit). Digitasi manual ke OSM hanya boleh men-trace citra yang lisensinya mengizinkan tracing untuk OSM. Citra satelit berlisensi terbatas hanya dipakai sebagai referensi modeling, bukan tekstur. |
 | NFR-07 | Privasi | Tidak menampilkan nama pemilik rumah pribadi atau data pribadi warga; bangunan pribadi diberi label generik. Persetujuan pemerintah desa untuk publikasi landmark. |
 | NFR-08 | Skalabilitas konten | Menambah wilayah baru cukup lewat pipeline data + Addressables tanpa mengubah kode inti. |
 | NFR-09 | Aksesibilitas | Subtitle/teks berukuran dapat diatur, opsi colorblind untuk penanda peta, remap kontrol. |
