@@ -37,7 +37,7 @@ Setiap milestone selesai bila **semua checklist tercentang dan Definition of Don
 - [ ] `[Client]` Upgrade editor ke Unity 6.7 LTS begitu rilis, sebelum Fase 1 selesai (ADR-0002)
 - [x] `[Client]` Paket: Addressables, Input System, Cinemachine, Splines, UI Toolkit, Newtonsoft Json, Test Framework
 - [ ] `[Client]` Scene `Boot` → `Menu` → `World`, state machine game di `Game.Core`
-- [ ] `[Client]` Event bus + konfigurasi berbasis ScriptableObject (tanpa angka ajaib)
+- [x] `[Client]` Event bus + konfigurasi berbasis ScriptableObject (tanpa angka ajaib)
 - [ ] `[Ops]` CI GameCI: test EditMode + build Windows otomatis per PR
 
 ### 1.2 Pipeline Peta → Unity
