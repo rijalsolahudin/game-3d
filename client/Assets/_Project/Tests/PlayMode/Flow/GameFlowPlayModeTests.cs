@@ -29,17 +29,14 @@ namespace Game.Tests.PlayMode.Flow
         private Keyboard _keyboard = null!;
         private GameFlowController _controller = null!;
         private double _longestFrameSeconds;
-        private InputSettings.BackgroundBehavior _originalBackgroundBehavior;
-#if UNITY_EDITOR
-        private InputSettings.EditorInputBehaviorInPlayMode _originalEditorBehavior;
-#endif
+        private InputTestSettingsScope _inputScope = null!;
 
         [UnitySetUp]
         public IEnumerator SetUp()
         {
             _received.Clear();
             _controller = null!;
-            UseTestInputSettings();
+            _inputScope = new InputTestSettingsScope();
             _keyboard = InputSystem.AddDevice<Keyboard>();
             _subscription = EventBus.Subscribe<GameStateChanged>(OnGameStateChanged);
 
@@ -65,33 +62,9 @@ namespace Game.Tests.PlayMode.Flow
             }
 
             InputSystem.RemoveDevice(_keyboard);
-            RestoreInputSettings();
+            _inputScope.Dispose();
             Time.timeScale = 1f;
             yield return null;
-        }
-
-        // Di editor batchmode Game view tidak pernah fokus, sehingga input perangkat dialihkan ke
-        // editor. Selama test, arahkan semua input ke game, lalu kembalikan nilai semula.
-        // (Mengganti objek InputSystem.settings tidak dipakai: setter menghancurkan settings lama.)
-        private void UseTestInputSettings()
-        {
-            var settings = InputSystem.settings;
-            _originalBackgroundBehavior = settings.backgroundBehavior;
-            settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
-#if UNITY_EDITOR
-            _originalEditorBehavior = settings.editorInputBehaviorInPlayMode;
-            settings.editorInputBehaviorInPlayMode =
-                InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
-#endif
-        }
-
-        private void RestoreInputSettings()
-        {
-            var settings = InputSystem.settings;
-            settings.backgroundBehavior = _originalBackgroundBehavior;
-#if UNITY_EDITOR
-            settings.editorInputBehaviorInPlayMode = _originalEditorBehavior;
-#endif
         }
 
         private void OnGameStateChanged(in GameStateChanged evt)

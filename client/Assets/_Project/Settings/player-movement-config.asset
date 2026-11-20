@@ -21,3 +21,10 @@ MonoBehaviour:
   _gravity: 9.81
   _maxFallSpeed: 50
   _rotationSpeed: 720
+  _groundStickSpeed: 2
+  _coyoteTime: 0.12
+  _jumpBufferTime: 0.12
+  _capsuleHeight: 1.8
+  _capsuleRadius: 0.3
+  _stepOffset: 0.35
+  _slopeLimit: 45
