@@ -25,6 +25,7 @@ Setiap milestone selesai bila **semua checklist tercentang dan Definition of Don
 - [ ] `[Data]` Unduh data OSM wilayah, audit kelengkapan jalan & footprint bangunan
 - [ ] `[Data]` Unduh DEMNAS untuk area cakupan
 - [ ] `[Data]` Unduh DEM sementara Copernicus GLO-30 (30 m) untuk area cakupan, dipakai sampai DEMNAS tersedia
+- [ ] `[Data]` Digitasi manual di OSM: gang, jalan setapak, sawah/kebun, dan irigasi, sesuai prioritas `pipeline/docs/osm-audit.md` (ADR-0003)
 - [ ] `[Data]` Survei lapangan: foto referensi landmark Tier A, daftar bangunan Tier B di jalan utama
 - [ ] `[Data]` Izin/sosialisasi ke pemerintah desa (PRD NFR-07)
 

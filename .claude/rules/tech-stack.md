@@ -8,7 +8,7 @@
 | Backend | Node.js LTS, TypeScript strict, Fastify 5, Zod, Drizzle ORM, pnpm |
 | Database | PostgreSQL 17+ dengan PostGIS |
 | Web pendukung (Fase 3) | Next.js + Tailwind CSS v4 |
-| Pipeline peta | Python 3 (uv), GDAL, Blender, OSM + DEMNAS |
+| Pipeline peta | Python 3 (uv), GDAL (rasterio), DuckDB opsional (ADR-0003), Blender, OSM + DEMNAS; sementara Copernicus DEM, footprint pelengkap Google/Microsoft |
 | Infra | Git LFS, GitHub Actions + GameCI, Docker, Sentry |
 
 - **Dilarang** menambah framework, ORM, database, atau package mayor baru tanpa ADR baru di `docs/adr/` dan pembaruan tabel ini serta `docs/technical-architecture.md` §1.
