@@ -35,7 +35,7 @@ Setiap milestone selesai bila **semua checklist tercentang dan Definition of Don
 ### 1.1 Fondasi Client
 - [x] `[Client]` Proyek Unity 6 LTS + URP, struktur `Assets/_Project/` dan `.asmdef` per modul (ARC §2.3)
 - [ ] `[Client]` Upgrade editor ke Unity 6.7 LTS begitu rilis, sebelum Fase 1 selesai (ADR-0002)
-- [ ] `[Client]` Paket: Addressables, Input System, Cinemachine, Splines, UI Toolkit, Newtonsoft Json, Test Framework
+- [x] `[Client]` Paket: Addressables, Input System, Cinemachine, Splines, UI Toolkit, Newtonsoft Json, Test Framework
 - [ ] `[Client]` Scene `Boot` → `Menu` → `World`, state machine game di `Game.Core`
 - [ ] `[Client]` Event bus + konfigurasi berbasis ScriptableObject (tanpa angka ajaib)
 - [ ] `[Ops]` CI GameCI: test EditMode + build Windows otomatis per PR
