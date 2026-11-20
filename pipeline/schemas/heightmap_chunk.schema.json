@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "heightmaps/<id>.json",
+  "description": "Metadata satu chunk heightmap (GAME-16). Nilai RAW uint16 -> tinggi: height_range_global_m[0] + raw/65535 * (height_range_global_m[1] - height_range_global_m[0]).",
+  "type": "object",
+  "required": ["format_version", "id", "cx", "cz", "bounds_local", "file", "sha256", "resolution", "min_height_m", "max_height_m", "raw_min", "raw_max", "height_range_global_m"],
+  "properties": {
+    "format_version": {"const": 1},
+    "id": {"type": "string", "pattern": "^(0|-?[1-9][0-9]*)_(0|-?[1-9][0-9]*)$"},
+    "cx": {"type": "integer"},
+    "cz": {"type": "integer"},
+    "bounds_local": {"type": "array", "minItems": 4, "items": {"type": "number"}},
+    "file": {"type": "string", "pattern": "^[A-Za-z0-9_-]+\\.raw$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "resolution": {"type": "integer", "minimum": 3},
+    "min_height_m": {"type": "number"},
+    "max_height_m": {"type": "number"},
+    "raw_min": {"type": "integer", "minimum": 0, "maximum": 65535},
+    "raw_max": {"type": "integer", "minimum": 0, "maximum": 65535},
+    "height_range_global_m": {"type": "array", "minItems": 2, "items": {"type": "number"}}
+  }
+}

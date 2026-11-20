@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "heightmaps/index.json",
+  "description": "Indeks global heightmap per chunk (GAME-16), dibaca importer Unity (GAME-18).",
+  "type": "object",
+  "required": ["format_version", "format", "source", "crs", "origin", "chunk_size_m", "resolution", "sample_spacing_m", "height_min_m", "height_max_m", "height_padding_m", "smoothing", "margin_chunks", "chunk_grid", "chunks"],
+  "properties": {
+    "format_version": {"const": 1},
+    "format": {
+      "type": "object",
+      "required": ["encoding", "byte_order", "bits", "row_order", "column_order", "height_formula"],
+      "properties": {
+        "encoding": {"const": "raw_uint16"},
+        "byte_order": {"const": "little"},
+        "bits": {"const": 16},
+        "row_order": {"const": "south_to_north"},
+        "column_order": {"const": "west_to_east"},
+        "height_formula": {"type": "string"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["file", "sha256", "crs"],
+      "properties": {
+        "file": {"type": "string"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "crs": {"type": "string"}
+      }
+    },
+    "crs": {"const": "EPSG:32749"},
+    "origin": {
+      "type": "object",
+      "required": ["lng", "lat", "utm49s"],
+      "properties": {
+        "lng": {"type": "number"},
+        "lat": {"type": "number"},
+        "utm49s": {"type": "array", "minItems": 2, "items": {"type": "number"}}
+      }
+    },
+    "chunk_size_m": {"const": 256},
+    "resolution": {"type": "integer", "minimum": 3},
+    "sample_spacing_m": {"type": "number", "minimum": 0},
+    "height_min_m": {"type": "number"},
+    "height_max_m": {"type": "number"},
+    "height_padding_m": {"type": "number", "minimum": 0},
+    "smoothing": {
+      "type": "object",
+      "required": ["sigma_m", "truncate_sigmas", "interpolation"],
+      "properties": {
+        "sigma_m": {"type": "number", "minimum": 0},
+        "truncate_sigmas": {"type": "number", "minimum": 0},
+        "interpolation": {"const": "bicubic_catmull_rom"}
+      }
+    },
+    "margin_chunks": {"type": "integer", "minimum": 0},
+    "chunk_grid": {
+      "type": "object",
+      "required": ["min_cx", "max_cx", "min_cz", "max_cz"],
+      "properties": {
+        "min_cx": {"type": "integer"},
+        "max_cx": {"type": "integer"},
+        "min_cz": {"type": "integer"},
+        "max_cz": {"type": "integer"}
+      }
+    },
+    "chunks": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^(0|-?[1-9][0-9]*)_(0|-?[1-9][0-9]*)$"}}
+  }
+}
