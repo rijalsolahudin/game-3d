@@ -22,9 +22,9 @@ Setiap milestone selesai bila **semua checklist tercentang dan Definition of Don
 ### 0.2 Survei & Data Mentah
 - [x] `[Data]` Tentukan polygon batas Desa Tumanggal + buffer (D1) dan titik origin
 - [ ] `[Data]` Ganti batas sementara (lingkaran 1,5 km) dengan batas administratif resmi desa + buffer 200 m
-- [ ] `[Data]` Unduh data OSM wilayah, audit kelengkapan jalan & footprint bangunan
+- [x] `[Data]` Unduh data OSM wilayah, audit kelengkapan jalan & footprint bangunan
 - [ ] `[Data]` Unduh DEMNAS untuk area cakupan
-- [ ] `[Data]` Unduh DEM sementara Copernicus GLO-30 (30 m) untuk area cakupan, dipakai sampai DEMNAS tersedia
+- [x] `[Data]` Unduh DEM sementara Copernicus GLO-30 (30 m) untuk area cakupan, dipakai sampai DEMNAS tersedia
 - [ ] `[Data]` Digitasi manual di OSM: gang, jalan setapak, sawah/kebun, dan irigasi, sesuai prioritas `pipeline/docs/osm-audit.md` (ADR-0003)
 - [ ] `[Data]` Survei lapangan: foto referensi landmark Tier A, daftar bangunan Tier B di jalan utama
 - [ ] `[Data]` Izin/sosialisasi ke pemerintah desa (PRD NFR-07)
@@ -44,7 +44,7 @@ Setiap milestone selesai bila **semua checklist tercentang dan Definition of Don
 - [ ] `[Ops]` CI GameCI: test EditMode + build Windows otomatis per PR
 
 ### 1.2 Pipeline Peta → Unity
-- [ ] `[Data]` Skrip proyeksi OSM/DEM → UTM 49S → koordinat lokal (ARC §2.2)
+- [x] `[Data]` Skrip proyeksi OSM/DEM → UTM 49S → koordinat lokal (ARC §2.2)
 - [ ] `[Data]` Generator heightmap per tile 256 m dari DEM (Copernicus sementara, lalu DEMNAS)
 - [ ] `[Data]` Ekspor jalan sebagai spline (JSON) + footprint bangunan + metadata tier
 - [ ] `[Client]` Importer Editor: membuat terrain tile, spline jalan, dan placeholder bangunan dari output pipeline
@@ -54,7 +54,7 @@ Setiap milestone selesai bila **semua checklist tercentang dan Definition of Don
 ### 1.3 Karakter Faceless
 - [ ] `[Art]` Model karakter humanoid faceless (tanpa hidung/mulut/telinga/alis), rig Humanoid
 - [ ] `[Art]` Shader/mesh mata `FacelessEyes`: iris, pupil, highlight (D4)
-- [ ] `[Client]` Controller third-person: jalan, lari, lompat, kamera Cinemachine
+- [x] `[Client]` Controller third-person: jalan, lari, lompat, kamera Cinemachine
 - [ ] `[Client]` Animator: idle, walk, run, jump, enter/exit vehicle
 - [ ] `[Client]` Kedip acak + arah pandang (look-at) ke POI terdekat
 - [ ] `[QA]` Test EditMode: aturan faceless (prefab karakter tidak memiliki slot fitur wajah lain)
