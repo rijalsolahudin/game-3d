@@ -125,6 +125,8 @@ flowchart LR
 
 - **1 unit Unity = 1 meter.** Sumbu: X = timur, Z = utara, Y = atas.
 - Origin dunia = titik awal Desa Tumanggal (koordinat WGS84 disimpan di `worlds.origin`). Semua data geografis diproyeksikan ke UTM 49S lalu dikurangi koordinat origin.
+  - **Origin saat ini (SEMENTARA):** lat **-7.3486842**, lng **109.4868011** (UTM 49S 332973.86 E, 9187422.85 N), yaitu titik jalan terdekat dari node desa OSM `node/1308706192`. Sumber data: `pipeline/data/origin.json`.
+  - **Batas saat ini (SEMENTARA):** lingkaran radius 1500 m di sekitar node desa (±7,07 km²), di `pipeline/data/boundary.geojson`. OSM tidak punya polygon batas desa. Keduanya wajib diganti dengan peta batas resmi desa dan titik depan balai desa **sebelum pipeline chunk dibangun (GAME-16/17)**, karena mengganti origin berarti menghitung ulang semua koordinat dunia.
 - Dunia dibagi **grid chunk 256 × 256 m**, ID chunk = `"{x}_{z}"` (indeks integer dari origin).
 - Radius aktif: chunk dalam 2 ring di sekitar pemain dimuat penuh; ring ke-3 dimuat versi LOD rendah; sisanya dilepas.
 - Cakupan MVP < 5 km dari origin sehingga **floating origin belum diperlukan**. Wajib diterapkan sebelum wilayah melebihi ±8 km dari origin.

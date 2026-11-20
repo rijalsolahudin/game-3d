@@ -1,0 +1,16 @@
+{
+ "lat": -7.3486842,
+ "lng": 109.4868011,
+ "source": "OSM way/697906351 (highway=residential) terdekat dari node desa",
+ "name": null,
+ "reason": "Balai/Kantor Desa tidak ditemukan di OSM dalam batas; dipakai titik di jalan terdekat (34 m) dari node desa.",
+ "crs": "EPSG:4326",
+ "license": "ODbL (OSM)",
+ "retrieved_at": "2026-11-20",
+ "provisional": true,
+ "utm49s": [
+  332973.86,
+  9187422.85
+ ],
+ "status": "usulan - menunggu persetujuan pemilik produk"
+}
