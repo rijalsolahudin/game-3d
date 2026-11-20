@@ -76,7 +76,7 @@ Setiap milestone selesai bila **semua checklist tercentang dan Definition of Don
 - [ ] `[Server]` Skema Drizzle + migrasi semua tabel ARC §5, seed dunia Tumanggal & `vehicle_models`
 - [ ] `[Server]` Auth: register, login, refresh rotasi, logout (Argon2id, JWT)
 - [ ] `[Server]` `GET /me`, `GET /me/save`, `GET /worlds/:slug`
-- [ ] `[Server]` Rate limit, CORS, helmet, format error standar
+- [x] `[Server]` Rate limit, CORS, helmet, format error standar
 - [ ] `[QA]` Integration test Vitest + Testcontainers untuk auth & save
 - [ ] `[Ops]` CI server: lint, typecheck, test
 
