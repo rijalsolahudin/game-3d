@@ -3,6 +3,7 @@
     "rootNamespace": "Game.Tests.PlayMode",
     "references": [
         "UnityEngine.TestRunner",
+        "Unity.InputSystem",
         "Game.Core",
         "Game.World",
         "Game.Player",

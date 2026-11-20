@@ -57,3 +57,17 @@ Semua konstanta tuning (kecepatan, radius, interval, batas) tinggal di aset conf
 5. Sistem menerima config lewat `[SerializeField]` atau konstruktor, dan membaca nilainya saat runtime (jangan disalin ke konstanta).
 
 Contoh acuan: `Game.Player.PlayerMovementConfig` + `Game.Player.PlayerMovementCalculator`.
+
+## State machine game (`Game.Core.Flow`)
+
+Scene di Build Settings: `Boot` (index 0) → `Menu` → `World`. Jalankan game dari `Boot`.
+
+- `GameStateMachine` (murni): Boot → Menu → Loading → Playing ⇄ Paused, Paused → Loading → Menu.
+  Transisi lain ditolak dan dicatat sebagai warning. Tiap transisi sah mem-publish `GameStateChanged`.
+- `GameFlowController` (scene Boot, `DontDestroyOnLoad`): memuat scene async (`SceneLoader`, `Awaitable`),
+  `Time.timeScale = 0` saat Paused, dan mengaktifkan action map `Player` **hanya** saat Playing.
+  Tombol pause = action `System/Pause` (Escape / Start gamepad).
+- UI tidak memutasi state: kirim `EventBus.Publish(new GameFlowRequested(GameFlowCommand.StartGame))`.
+- Controller gameplay (mis. karakter) membaca input dari project-wide actions (`InputSystem.actions`) supaya
+  ikut ter-gate, dan/atau mendengarkan `GameStateChanged` lalu cek `evt.AllowsGameplayInput`.
+- Tuning (nama scene, durasi minimum loading, prioritas loading) di `Settings/game-flow-config.asset`.

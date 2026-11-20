@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="menu.uss" />
+    <ui:VisualElement name="main-menu" class="menu-screen">
+        <ui:VisualElement class="menu-panel">
+            <ui:Label text="Desa Tumanggal" enable-rich-text="false" class="menu-title" />
+            <ui:Button name="start-button" text="Mulai" enable-rich-text="false" class="menu-button" />
+            <ui:Button name="quit-button" text="Keluar" enable-rich-text="false" class="menu-button" />
+            <ui:Label name="loading-label" text="Memuat..." enable-rich-text="false" class="menu-status" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
