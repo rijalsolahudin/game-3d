@@ -47,6 +47,7 @@ Setiap milestone selesai bila **semua checklist tercentang dan Definition of Don
 - [x] `[Data]` Skrip proyeksi OSM/DEM → UTM 49S → koordinat lokal (ARC §2.2)
 - [ ] `[Data]` Generator heightmap per tile 256 m dari DEM (Copernicus sementara, lalu DEMNAS)
 - [ ] `[Data]` Ekspor jalan sebagai spline (JSON) + footprint bangunan + metadata tier
+- [ ] `[Data]` Jalan penghubung otomatis (`source: generated`): sambung jalan buntu dan beri gang ke kelompok rumah, lewat jalur paling landai di terrain (ADR-0003)
 - [ ] `[Client]` Importer Editor: membuat terrain tile, spline jalan, dan placeholder bangunan dari output pipeline
 - [ ] `[Client]` Addressables group per chunk, world streamer 2 ring + ring LOD (ARC §2.2)
 - [ ] `[Client]` Batas dunia (dinding tak terlihat + kabut) sesuai D1
