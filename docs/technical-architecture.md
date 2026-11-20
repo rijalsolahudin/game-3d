@@ -224,7 +224,7 @@ Base URL: `https://api.<domain>/v1` · Format: JSON · Auth: `Authorization: Bea
 | GET | `/worlds/:slug/pois` | Daftar POI (tanpa koordinat koleksi tersembunyi). |
 | GET | `/health` | Health check. |
 
-**Aturan API:** semua request & response divalidasi Zod; error memakai format `{ "error": { "code": "STRING_CODE", "message": "...", "details": [{ "path": "...", "message": "..." }] } }`, dengan `details` opsional dan hanya untuk `VALIDATION_ERROR` (tidak pernah memuat nilai input). Daftar kode error ada di `server/docs/error-codes.md`. Rate limit auth 10 req/menit/IP untuk **seluruh** `/v1/auth/*` (satu counter bersama); di belakang proxy, IP klien dibaca lewat `TRUST_PROXY` (hop count/CIDR, default mati). `POST /me/sync` maksimal 100 event per request.
+**Aturan API:** semua request & response divalidasi Zod; error memakai format `{ "error": { "code": "STRING_CODE", "message": "...", "details": [{ "path": "...", "message": "..." }] } }`, dengan `details` opsional dan hanya untuk `VALIDATION_ERROR` (tidak pernah memuat nilai input). Daftar kode error ada di `server/docs/error-codes.md`. Rate limit auth 10 req/menit/IP untuk **seluruh** `/v1/auth/*` (satu counter bersama); di belakang proxy, IP klien dibaca lewat `TRUST_PROXY` (IP/CIDR proxy atau keyword `loopback`/`linklocal`/`uniquelocal`, default mati; hop count tidak didukung karena Fastify 5 sengaja menolak mempercayai XFF dengan hop count). `POST /me/sync` maksimal 100 event per request.
 
 ---
 

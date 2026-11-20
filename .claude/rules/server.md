@@ -16,7 +16,7 @@ paths:
 ## Autentikasi & otorisasi
 - Password: Argon2id. Access token: JWT 15 menit. Refresh token: 30 hari, rotasi, disimpan ter-hash, deteksi reuse per `family_id` (reuse → cabut seluruh family).
 - Semua endpoint selain `/v1/auth/*` dan `/v1/health` wajib JWT. Ambil `userId` dari token, **jangan pernah** dari body/params.
-- Rate limit endpoint auth 10 req/menit/IP, satu counter bersama untuk seluruh `/v1/auth/*` (hook di scope plugin auth, bukan config per route). Jangan set `trustProxy: true` tanpa batas; pakai env `TRUST_PROXY`.
+- Rate limit endpoint auth 10 req/menit/IP, satu counter bersama untuk seluruh `/v1/auth/*` (hook di scope plugin auth, bukan config per route). Jangan set `trustProxy: true` atau hop count; pakai env `TRUST_PROXY` berisi IP/CIDR proxy.
 - Panel admin web memakai peran `admin` terpisah; jangan menambah peran lain tanpa memperbarui file ini.
 
 ## Database & query
