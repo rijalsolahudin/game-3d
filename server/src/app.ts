@@ -2,11 +2,13 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
 import type { Env } from './lib/env.js';
 import { errorHandlerPlugin } from './plugins/error-handler.js';
+import { securityPlugin } from './plugins/security.js';
 import { swaggerPlugin } from './plugins/swagger.js';
 import { healthRoutes } from './modules/health/health.routes.js';
 
 export async function buildApp(env: Env): Promise<FastifyInstance> {
   const app = Fastify({
+    trustProxy: env.TRUST_PROXY,
     logger: {
       level: env.LOG_LEVEL,
       ...(env.NODE_ENV === 'development' && {
@@ -19,7 +21,10 @@ export async function buildApp(env: Env): Promise<FastifyInstance> {
   app.setSerializerCompiler(serializerCompiler);
 
   await app.register(errorHandlerPlugin);
-  await app.register(swaggerPlugin);
+  await app.register(securityPlugin, { env });
+  if (env.NODE_ENV !== 'production') {
+    await app.register(swaggerPlugin);
+  }
   await app.register(healthRoutes, { prefix: '/v1' });
 
   return app;
