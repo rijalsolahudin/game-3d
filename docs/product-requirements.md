@@ -61,7 +61,7 @@ Draft sebelumnya merujuk ke "kuesioner" tanpa menuliskan jawabannya. Bagian ini 
 | # | Keputusan | Nilai | Status |
 |---|---|---|---|
 | D1 | Cakupan peta MVP | Batas administratif Desa Tumanggal, ditambah buffer ±200 m untuk jalan penghubung. Di luar batas: dinding tak terlihat + kabut jarak jauh. | Usulan |
-| D2 | Tingkat kemiripan bangunan | **3 tier**: *Tier A* landmark (masjid, balai desa, sekolah, ±10–20 bangunan) dimodelkan manual dengan referensi foto; *Tier B* bangunan di tepi jalan utama, modular dengan proporsi & warna dari survei; *Tier C* bangunan lain, procedural dari footprint OSM. | Usulan |
+| D2 | Tingkat kemiripan bangunan | **3 tier**: *Tier A* landmark (masjid, balai desa, sekolah, ±10–20 bangunan) dimodelkan manual dengan referensi foto; *Tier B* bangunan di tepi jalan utama, modular dengan proporsi & warna dari survei; *Tier C* bangunan lain, procedural dari footprint OSM. Sampai survei lapangan selesai, semua bangunan sementara diperlakukan sebagai Tier C di posisi footprint OSM asli. | Usulan |
 | D3 | Karakter yang wajib faceless | **Semua** karakter humanoid (pemain dan NPC bila ditambahkan). | Usulan |
 | D4 | Tingkat detail mata | **Menengah**: bentuk dasar + iris + pupil + highlight, animasi kedip & arah pandang. Tanpa alis, bulu mata, atau ekspresi kompleks. | Ditetapkan (dari aturan proyek lama) |
 | D5 | Mekanisme perolehan kendaraan | Motor bebek diberikan di awal (tutorial). Mobil terbuka setelah pemain menemukan ≥ 50% lokasi Tier A. Tanpa mata uang. | Usulan |

@@ -18,7 +18,7 @@ Stack di bawah dipilih untuk game open world semi-realistis dengan fisika kendar
 | Render pipeline | **URP** (Universal Render Pipeline) | Performa baik di GPU kelas menengah (spesifikasi minimum PRD §6), tetap mendukung tampilan semi-realistis. GPU Resident Drawer + GPU occlusion culling untuk dunia padat objek. |
 | Streaming aset | **Addressables** | Memuat/melepas konten per chunk dunia, mendukung remote content catalog untuk menambah wilayah tanpa build ulang. |
 | Input | **Input System** (package baru) | Keyboard-mouse dan gamepad dengan satu action map, mendukung remap. |
-| Kamera | **Cinemachine 3** | Kamera third-person & kamera kendaraan dengan transisi halus. |
+| Kamera | **Cinemachine 3** | Kamera third-person & kamera kendaraan dengan transisi halus. Di Unity 6.6 memakai package bawaan editor (versi 6.6.x, API Cinemachine 3 `Unity.Cinemachine`). |
 | UI / HUD | **UI Toolkit** (UXML + USS), TextMeshPro untuk teks dunia | Data binding runtime, performa lebih baik dari uGUI untuk HUD kompleks. |
 | Jalan | **Unity Splines** | Jalan desa dibangun dari polyline OSM. |
 | Terrain | Unity Terrain (heightmap per tile) | Kontur dari DEM. |
@@ -62,7 +62,7 @@ Stack di bawah dipilih untuk game open world semi-realistis dengan fisika kendar
 | Tahap | Alat | Output |
 |---|---|---|
 | Jalan, sungai, footprint bangunan, landuse | **OpenStreetMap** via Overpass API / ekspor `.osm.pbf` | GeoJSON |
-| Kontur tanah | **DEMNAS** (BIG, resolusi ±8 m) | GeoTIFF → heightmap RAW 16-bit |
+| Kontur tanah | **DEMNAS** (BIG, resolusi ±8 m). Sementara memakai **Copernicus GLO-30** (±30 m, unduh otomatis tanpa login) sampai DEMNAS diunduh | GeoTIFF → heightmap RAW 16-bit |
 | Referensi visual | Foto survei lapangan, Mapillary (CC BY-SA), citra satelit (hanya referensi) | Folder referensi per bangunan |
 | Proyeksi | **GDAL/ogr2ogr**, proyeksi **UTM zona 49S (EPSG:32749)** lalu dikonversi ke koordinat lokal relatif titik origin | Koordinat meter |
 | Modeling | **Blender** (+ add-on Blosm untuk impor OSM), modeling manual Tier A | `.fbx` / `.glb` |
@@ -402,6 +402,7 @@ erDiagram
 │  │  ├─ Art/{Characters,Vehicles,Buildings,Environment,Materials}/
 │  │  ├─ Prefabs/
 │  │  ├─ Scenes/{Boot,Menu,World}.unity
+│  │  ├─ Editor/                 # Game.Editor (khusus Editor): BuildScript, importer peta
 │  │  ├─ Settings/               # URP asset, Input Actions, ScriptableObject config
 │  │  ├─ UI/                     # UXML, USS
 │  │  └─ Tests/{EditMode,PlayMode}/
