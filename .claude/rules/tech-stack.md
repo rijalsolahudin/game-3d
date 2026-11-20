@@ -4,7 +4,7 @@
 
 | Lapisan | Stack |
 |---|---|
-| Game client | Unity 6 LTS, C#, URP, Addressables, Input System, Cinemachine 3, UI Toolkit, Splines |
+| Game client | Unity 6 LTS (sementara 6000.6.10f1 sampai 6.7 LTS rilis, lihat ADR-0002), C#, URP, Addressables, Input System, Cinemachine 3, UI Toolkit, Splines |
 | Backend | Node.js LTS, TypeScript strict, Fastify 5, Zod, Drizzle ORM, pnpm |
 | Database | PostgreSQL 17+ dengan PostGIS |
 | Web pendukung (Fase 3) | Next.js + Tailwind CSS v4 |
