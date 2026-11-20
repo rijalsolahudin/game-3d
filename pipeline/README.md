@@ -68,4 +68,36 @@ akan hilang/bergeser saat batas resmi dipakai.
 
 - `geo/projection.py`: satu-satunya modul proyeksi (EPSG:4326, EPSG:32749, lokal x=timur, z=utara).
 - `scripts/fetch_boundary.py`: pengambilan data, batas, origin, dan pratinjau.
-- `tests/`: proyeksi dan batas/origin (provisional true, lingkaran sesuai radius, origin di dalam).
+- `scripts/fetch_dem_copernicus.py`: unduh DEM sementara Copernicus GLO-30 + cek cakupan (GAME-52).
+- `tests/`: proyeksi dan batas/origin (provisional true, lingkaran sesuai radius, origin di dalam);
+  `test_dem_copernicus.py` (pemilihan tile, cakupan, idempotensi; tanpa jaringan).
+
+## DEM sementara: Copernicus GLO-30 (GAME-52)
+
+```
+uv run python scripts/fetch_dem_copernicus.py               # unduh tile + cek cakupan
+uv run python scripts/fetch_dem_copernicus.py --check-only  # verifikasi file lokal, tanpa jaringan
+```
+
+- Pengganti sementara DEMNAS (GAME-7, butuh login manual di situs BIG); keputusan 2026-11-21 (ARC 1.4).
+  Akan digantikan DEMNAS begitu file itu ada.
+- Sumber: AWS Open Data `copernicus-dem-30m` (HTTPS publik, tanpa kredensial), COG 1 arc-second
+  (~30 m), EPSG:4326. Tile `Copernicus_DSM_COG_10_S08_00_E109_00_DEM` (dinamai dari pojok kiri-bawah
+  nominal: lintang -8..-7, bujur 109..110; grid asli bergeser setengah piksel, bounds raster
+  bujur 108,99986..109,99986 dan lintang -7,99986..-6,99986, sehingga lon 109,9999 sudah masuk tile E110), 37.366.881 byte (35,6 MiB), sha256
+  `5da4c2e5f8cb559a322700d6d3a318b0c331992043118be21e7c5c21a155c003`.
+- Diunduh 2026-11-20 21:27 UTC (2026-11-21 WIB). Disimpan apa adanya di `data/raw/dem/copernicus/`
+  (gitignore) bersama `dem_copernicus.json` (URL, waktu unduh, ukuran, sha256, ETag).
+  Tanpa reproyeksi/potong: itu GAME-16.
+- Skrip memeriksa bounds raster mencakup polygon batas dan tidak ada nodata di piksel yang
+  disentuh polygon; bila gagal keluar dengan kode 1 dan pesan jelas. Menjalankan ulang tidak
+  mengunduh lagi bila ukuran dan sha256 cocok dengan metadata. Unduhan ditulis ke `.part` lalu di-rename.
+- Ketinggian di dalam batas sementara (7691 piksel): min 98,00 m, max 247,18 m, mean 184,30 m.
+- Lisensi: Copernicus DEM licence, gratis untuk publik; atribusi wajib (EULA ada di bucket,
+  `INFO/eula_F.pdf`; teks atribusi di bawah diverifikasi dari sana). Masukkan ke kredit game:
+  "© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by
+  the European Union and ESA; all rights reserved".
+- **Catatan untuk GAME-16: ini DSM, bukan DTM.** Nilai mencakup tinggi pohon dan bangunan, jadi
+  terrain bisa sedikit bergelombang atau terangkat di area pohon lebat/permukiman. Resolusi ~30 m
+  juga jauh lebih kasar dari DEMNAS (~8 m): pertimbangkan penghalusan dan jangan anggap detail
+  kecil sebagai nyata.
