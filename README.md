@@ -27,3 +27,14 @@ git clone <url-repo>
 Bila sudah terlanjur clone tanpa LFS, jalankan `git lfs pull`.
 
 Data mentah pipeline (`pipeline/data/raw/`) tidak disimpan di repo. Cara mengunduhnya ada di `pipeline/README.md`.
+
+## Database lokal
+
+Backend memakai PostgreSQL 17 + PostGIS 3.5 yang dijalankan lewat Docker.
+
+```bash
+cp .env.example .env      # lalu ganti POSTGRES_PASSWORD
+docker compose up -d db
+```
+
+Database tersedia di `localhost:5433` (port bisa diubah lewat `POSTGRES_PORT` di `.env`). Default-nya 5433 agar tidak bentrok dengan PostgreSQL lain yang mungkin sudah jalan di 5432. Data tersimpan di volume `game-3d_db-data`, jadi tidak hilang saat container dimatikan. Untuk menghapus data sepenuhnya: `docker compose down -v`.
