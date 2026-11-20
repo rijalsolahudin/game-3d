@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="menu.uss" />
+    <ui:VisualElement name="pause-overlay" class="menu-screen menu-screen--overlay">
+        <ui:VisualElement class="menu-panel">
+            <ui:Label text="Jeda" enable-rich-text="false" class="menu-title" />
+            <ui:Button name="resume-button" text="Lanjut" enable-rich-text="false" class="menu-button" />
+            <ui:Button name="menu-button" text="Ke Menu" enable-rich-text="false" class="menu-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

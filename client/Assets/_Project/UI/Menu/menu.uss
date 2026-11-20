@@ -1,0 +1,42 @@
+.menu-screen {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(24, 32, 28);
+}
+
+.menu-screen--overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.menu-panel {
+    min-width: 360px;
+    padding: 32px;
+    align-items: stretch;
+}
+
+.menu-title {
+    font-size: 48px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(240, 236, 224);
+    margin-bottom: 32px;
+}
+
+.menu-button {
+    height: 56px;
+    margin: 8px 0;
+    font-size: 24px;
+}
+
+.menu-status {
+    margin-top: 16px;
+    font-size: 20px;
+    -unity-text-align: middle-center;
+    color: rgb(200, 196, 184);
+}
