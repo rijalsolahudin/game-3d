@@ -22,6 +22,8 @@ client/[Bb]uild/
 client/[Bb]uilds/
 client/[Ll]ogs/
 client/[Uu]ser[Ss]ettings/
+client/.vscode/*
+!client/.vscode/extensions.json
 client/[Mm]emoryCaptures/
 client/[Rr]ecordings/
 client/*.csproj
