@@ -14,7 +14,7 @@ Stack di bawah dipilih untuk game open world semi-realistis dengan fisika kendar
 
 | Area | Pilihan | Alasan |
 |---|---|---|
-| Engine | **Unity 6 LTS** (C#) | Ekosistem open world matang, fisika & terrain bawaan, pipeline aset kuat, mudah dipindah ke mobile/konsol kelak. |
+| Engine | **Unity 6 LTS** (C#); sementara **6000.6.10f1** sampai 6.7 LTS rilis ([ADR-0002](adr/0002-unity-version.md)) | Ekosistem open world matang, fisika & terrain bawaan, pipeline aset kuat, mudah dipindah ke mobile/konsol kelak. |
 | Render pipeline | **URP** (Universal Render Pipeline) | Performa baik di GPU kelas menengah (spesifikasi minimum PRD §6), tetap mendukung tampilan semi-realistis. GPU Resident Drawer + GPU occlusion culling untuk dunia padat objek. |
 | Streaming aset | **Addressables** | Memuat/melepas konten per chunk dunia, mendukung remote content catalog untuk menambah wilayah tanpa build ulang. |
 | Input | **Input System** (package baru) | Keyboard-mouse dan gamepad dengan satu action map, mendukung remap. |
