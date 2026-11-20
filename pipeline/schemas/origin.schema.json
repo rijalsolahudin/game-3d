@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "origin.json",
+  "description": "Titik origin dunia game (lokal 0,0). Dipakai oleh geo/projection.py.",
+  "type": "object",
+  "required": ["lat", "lng", "crs"],
+  "properties": {
+    "lat": {"type": "number", "minimum": -90, "maximum": 90},
+    "lng": {"type": "number", "minimum": -180, "maximum": 180},
+    "crs": {"const": "EPSG:4326"}
+  }
+}

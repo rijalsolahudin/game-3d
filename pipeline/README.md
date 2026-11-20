@@ -69,6 +69,8 @@ akan hilang/bergeser saat batas resmi dipakai.
 - `geo/projection.py`: satu-satunya modul proyeksi (EPSG:4326, EPSG:32749, lokal x=timur, z=utara).
 - `scripts/fetch_boundary.py`: pengambilan data, batas, origin, dan pratinjau.
 - `scripts/fetch_dem_copernicus.py`: unduh DEM sementara Copernicus GLO-30 + cek cakupan (GAME-52).
+- `geo/chunks.py`: ID chunk `"{x}_{z}"` (256 m) dan bounds.
+- `schemas/origin.schema.json`: skema `data/origin.json`.
 - `tests/`: proyeksi dan batas/origin (provisional true, lingkaran sesuai radius, origin di dalam);
   `test_dem_copernicus.py` (pemilihan tile, cakupan, idempotensi; tanpa jaringan).
 
@@ -101,3 +103,32 @@ uv run python scripts/fetch_dem_copernicus.py --check-only  # verifikasi file lo
   terrain bisa sedikit bergelombang atau terangkat di area pohon lebat/permukiman. Resolusi ~30 m
   juga jauh lebih kasar dari DEMNAS (~8 m): pertimbangkan penghalusan dan jangan anggap detail
   kecil sebagai nyata.
+
+## Proyeksi koordinat (GAME-15)
+
+`geo/projection.py` adalah satu-satunya sumber konversi lon/lat -> koordinat game. Konvensi:
+**x = timur, z = utara, 1 unit = 1 m, (0, 0) = origin** (`data/origin.json`, divalidasi terhadap
+`schemas/origin.schema.json`). Lokal = UTM 49S (EPSG:32749) dikurangi UTM origin, jadi jarak lokal
+adalah jarak grid UTM (skala ~0.999945 terhadap jarak geodesik di Tumanggal; arah grid berbeda
+~0.19 derajat dari azimut sejati karena konvergensi meridian).
+
+```python
+from geo.projection import default_projection
+from geo.chunks import chunk_id, chunk_bounds
+
+p = default_projection()                  # origin dari data/origin.json
+x, z = p.to_local(lon, lat)               # titik tunggal
+xs, zs = p.to_local_array(lons, lats)     # array numpy
+lon, lat = p.to_lonlat(x, z)              # konversi balik (round-trip < 1 mm)
+local_fc = p.geojson_to_local(fc)         # Feature/FeatureCollection/geometri apa pun -> [x, z]
+ll_fc = p.geojson_to_lonlat(local_fc)     # kebalikannya
+
+chunk_id(x, z)             # "{cx}_{cz}", chunk 256 m, floor division ("-1_-1" untuk x=z=-0.1)
+chunk_bounds("0_0")        # (min_x, min_z, max_x, max_z) = (0, 0, 256, 256); batas atas eksklusif
+```
+
+Untuk shapely/raster tersedia `transformer_to_utm()` / `transformer_to_wgs()` (UTM absolut) dan
+`LocalProjection.origin_utm` untuk menggeser. Elevasi (nilai ke-3 posisi GeoJSON) dipertahankan.
+Titik kontrol di `tests/test_local_projection.py`: node OSM nyata (Overpass, 2026-11-21, ODbL)
+dibandingkan dengan `pyproj.Geod` (jarak dan azimut geodesik, dikoreksi faktor skala dan konvergensi
+meridian dari `Proj.get_factors`); selisih < 0,5 m.
