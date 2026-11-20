@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://game-3d.local/schemas/index.schema.json",
+  "title": "Indeks ekspor chunk (GAME-17)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "chunk_size_m", "coordinate_system", "origin", "boundary", "sources", "inputs",
+               "config", "totals", "chunks"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "chunk_size_m": {"type": "integer", "minimum": 1},
+    "coordinate_system": {
+      "type": "object", "additionalProperties": false,
+      "required": ["crs", "axes", "unit"],
+      "properties": {"crs": {"type": "string"}, "axes": {"type": "string"}, "unit": {"type": "string"}}
+    },
+    "origin": {
+      "type": "object", "additionalProperties": false,
+      "required": ["lat", "lng", "provisional"],
+      "properties": {"lat": {"type": "number"}, "lng": {"type": "number"}, "provisional": {"type": "boolean"}}
+    },
+    "boundary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["provisional"],
+      "properties": {"provisional": {"type": "boolean"}, "method": {"type": "string"}}
+    },
+    "sources": {
+      "description": "Sumber data dan teks atribusi untuk kredit game (NFR-06)",
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "name", "license", "attribution", "used_buildings"],
+        "properties": {
+          "id": {"enum": ["osm", "google", "microsoft"]},
+          "name": {"type": "string"},
+          "license": {"type": "string"},
+          "license_url": {"type": "string"},
+          "attribution": {"type": "string"},
+          "download_date": {"type": "string"},
+          "used_buildings": {"type": "integer", "minimum": 0}
+        }
+      }
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["name", "file", "sha256"],
+        "properties": {"name": {"type": "string"}, "file": {"type": "string"},
+                       "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+      }
+    },
+    "config": {"type": "object"},
+    "totals": {
+      "type": "object", "additionalProperties": false,
+      "required": ["chunks", "road_pieces", "road_km", "waterway_pieces", "areas", "buildings", "buildings_by_source",
+                   "buildings_by_tier"],
+      "properties": {
+        "chunks": {"type": "integer", "minimum": 0},
+        "road_pieces": {"type": "integer", "minimum": 0},
+        "road_km": {"type": "number", "minimum": 0},
+        "waterway_pieces": {"type": "integer", "minimum": 0},
+        "areas": {"type": "integer", "minimum": 0},
+        "buildings": {"type": "integer", "minimum": 0},
+        "buildings_by_source": {"type": "object", "additionalProperties": {"type": "integer"}},
+        "buildings_by_tier": {"type": "object", "additionalProperties": {"type": "integer"}}
+      }
+    },
+    "chunks": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "cx", "cz", "file", "bytes", "sha256", "counts"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^(0|-?[1-9][0-9]*)_(0|-?[1-9][0-9]*)$"},
+          "cx": {"type": "integer"},
+          "cz": {"type": "integer"},
+          "file": {"type": "string"},
+          "bytes": {"type": "integer", "minimum": 0},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "counts": {
+            "type": "object", "additionalProperties": false,
+            "required": ["roads", "waterways", "areas", "buildings"],
+            "properties": {"roads": {"type": "integer"}, "waterways": {"type": "integer"},
+                           "areas": {"type": "integer"}, "buildings": {"type": "integer"}}
+          }
+        }
+      }
+    }
+  }
+}

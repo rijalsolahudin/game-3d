@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "description": "Daftar bangunan Tier A (landmark manual) dan Tier B (modular kit). Kosong = semua bangunan Tier C. Diisi setelah survei (GAME-8). id = id bangunan di ekspor chunk, mis. osm-way-123456.",
+  "entries": []
+}
