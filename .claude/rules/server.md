@@ -11,12 +11,12 @@ paths:
 - TypeScript `strict: true`, dilarang `any` (pakai `unknown` + narrowing).
 - Env var divalidasi Zod saat boot; server berhenti bila ada yang kurang.
 - Semua endpoint di bawah `/v1`, request & response divalidasi Zod dan terdokumentasi otomatis ke OpenAPI.
-- Format error tunggal: `{ "error": { "code", "message" } }` lewat error handler global; stack trace tidak boleh bocor di production.
+- Format error tunggal: `{ "error": { "code", "message", "details"? } }` lewat error handler global. `details` hanya untuk `VALIDATION_ERROR` (path + pesan, tanpa nilai input). Kode error hanya dari `src/lib/errors.ts` dan didokumentasikan di `server/docs/error-codes.md`. Stack trace dan pesan internal tidak boleh bocor di production.
 
 ## Autentikasi & otorisasi
 - Password: Argon2id. Access token: JWT 15 menit. Refresh token: 30 hari, rotasi, disimpan ter-hash, deteksi reuse per `family_id` (reuse → cabut seluruh family).
 - Semua endpoint selain `/v1/auth/*` dan `/v1/health` wajib JWT. Ambil `userId` dari token, **jangan pernah** dari body/params.
-- Rate limit endpoint auth 10 req/menit/IP.
+- Rate limit endpoint auth 10 req/menit/IP, satu counter bersama untuk seluruh `/v1/auth/*` (hook di scope plugin auth, bukan config per route). Jangan set `trustProxy: true` tanpa batas; pakai env `TRUST_PROXY`.
 - Panel admin web memakai peran `admin` terpisah; jangan menambah peran lain tanpa memperbarui file ini.
 
 ## Database & query
