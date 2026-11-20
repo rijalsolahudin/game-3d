@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Metadata unduhan footprint pembanding (Google Open Buildings + Microsoft ML, via VIDA) - HANYA untuk audit",
+  "type": "object",
+  "required": ["downloaded_at", "download_date", "source", "url", "bbox_swne", "query", "count",
+               "count_by_source", "raw_file", "raw_sha256", "license", "usage"],
+  "properties": {
+    "downloaded_at": {"type": "string"},
+    "download_date": {"type": "string"},
+    "source": {"type": "string"},
+    "url": {"type": "string"},
+    "bbox_swne": {"type": "array"},
+    "query": {"type": "string"},
+    "count": {"type": "integer"},
+    "count_by_source": {"type": "object"},
+    "raw_file": {"type": "string"},
+    "raw_sha256": {"type": "string"},
+    "license": {"type": "string"},
+    "usage": {"type": "string"}
+  }
+}

@@ -132,3 +132,34 @@ Untuk shapely/raster tersedia `transformer_to_utm()` / `transformer_to_wgs()` (U
 Titik kontrol di `tests/test_local_projection.py`: node OSM nyata (Overpass, 2026-11-21, ODbL)
 dibandingkan dengan `pyproj.Geod` (jarak dan azimut geodesik, dikoreksi faktor skala dan konvergensi
 meridian dari `Proj.get_factors`); selisih < 0,5 m.
+
+## GAME-6: data OSM dan audit
+
+```
+uv run python scripts/fetch_osm.py                                   # Overpass -> data/raw/osm/osm_all_<tanggal>.json + .meta.json
+uv run python scripts/fetch_osm.py --check                           # validasi raw + metadata terbaru (tanpa jaringan)
+uv run --group buildings-ref python scripts/fetch_open_buildings.py  # pembanding footprint (opsional) -> data/raw/open_buildings/
+uv run python scripts/audit_osm.py                                   # tulis docs/osm-audit.md (tanpa jaringan, deterministik)
+```
+
+- Raw OSM: semua `highway, waterway, natural, landuse, leisure, amenity, building, barrier, man_made, place, shop, tourism,
+  historic, office` (node/way/relation) dalam bbox batas, `out geom` + node referensi way. Metadata (tanggal unduh, query,
+  jumlah elemen, timestamp basis OSM, SHA-256) divalidasi terhadap `schemas/osm_raw_meta.schema.json`. Clip ke batas dilakukan saat audit.
+- Pembanding footprint: Google Open Buildings v3 + Microsoft Global ML Building Footprints (gabungan VIDA, source.coop,
+  `.../geoparquet/by_country/country_iso=IDN/IDN.parquet`, dibaca lewat HTTP range, tanpa login), **diunduh 2026-11-20**
+  ke `data/raw/open_buildings/`. Lisensi: Google Open Buildings v3 CC BY 4.0 / ODbL, Microsoft ODbL. Dipakai untuk audit dan
+  sebagai layer pelengkap game (keputusan pemilik produk, ADR-0003); jangan digabung diam-diam ke data OSM, catat sumbernya.
+  Skema metadata: `schemas/open_buildings_meta.schema.json`. Grup dependensi opsional `buildings-ref` (duckdb>=2.0,<3).
+  Teks atribusi pembanding untuk kredit: "Building footprints: Google Open Buildings v3 (CC BY 4.0) and Microsoft Global ML
+  Building Footprints (ODbL), via VIDA Google-Microsoft Open Buildings."
+- Metadata raw (OSM dan pembanding) divalidasi terhadap skema dan sha256 raw dicocokkan sebelum audit.
+- Laporan: [`docs/osm-audit.md`](docs/osm-audit.md) (data diunduh 2026-11-20).
+- Modul: `osm/{query,parse,meta,geom,stats,network,completeness,audit,report}.py`; test `tests/test_osm.py`.
+- `osm/geom.chunk_id` memakai rumus chunk domain.md (floor(m/256)); selaraskan ke modul bersama di `geo/` bila sudah ada.
+
+### Atribusi OSM (ODbL), wajib di kredit game dan rilis
+
+> Map data (c) OpenStreetMap contributors, available under the Open Database License (https://www.openstreetmap.org/copyright).
+
+Turunan database OSM (footprint, jaringan jalan hasil olahan) wajib diberi atribusi dan dibagikan serupa sesuai ODbL (NFR-06).
+Unduhan GAME-6: Overpass API, 2026-11-20, basis OSM 2026-11-20T21:23:29Z.
