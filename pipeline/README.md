@@ -235,3 +235,76 @@ persis tetapi menghasilkan permukaan berfaset 30 m. Pada DEM sintetis landai sel
 
 `terrain/{config,dem,smooth,chunk_select,build,schema_check}.py`, skrip `scripts/build_heightmaps.py`,
 test `tests/test_heightmaps.py` (DEM sintetis; test DEM asli di-skip bila `data/raw/dem/copernicus/*.tif` tidak ada).
+
+## GAME-17: ekspor JSON per chunk (untuk importer Unity GAME-18)
+
+```
+uv run python scripts/export_chunks.py                  # -> data/out/chunks/{id}.json + index.json + data/out/export_report.json
+uv run python scripts/export_chunks.py --no-supplement  # hanya OSM
+```
+
+Masukan (semua dicek sha256 lewat meta loader GAME-6): raw OSM, raw pembanding Google/Microsoft (opsional), `data/boundary.geojson`,
+`data/origin.json`, `data/tiers.json`. Keluaran deterministik (dua kali jalan = byte-identik, tanpa timestamp) dan idempoten
+(chunk basi dihapus). Bila ada chunk/index yang tidak lolos skema, chunk itu TIDAK ditulis, kode keluar 1, dan galatnya ada di
+`export_report.json` (`invalid_chunks`). Data OSM baru (gang, sawah, irigasi dari GAME-54) otomatis ikut setelah `fetch_osm.py` dijalankan ulang.
+Dependensi baru: `jsonschema` (validator JSON Schema Draft 2020-12). Konstanta tuning di `export/config.py`.
+
+### Format (skema: `schemas/chunk.schema.json`, `index.schema.json`, `tiers.schema.json`)
+
+- Koordinat lokal `[x, z]` meter (x timur, z utara, origin `data/origin.json`), 2 desimal. Chunk 256 m, ID `"{cx}_{cz}"`,
+  chunk memuat `x in [cx*256, (cx+1)*256)`, idem z. Hanya chunk yang punya isi yang ditulis. Urutan array stabil (terurut `id`).
+- Chunk: `{schema_version, chunk, cx, cz, bounds, roads[], waterways[], areas[], buildings[]}`.
+- **roads / waterways** (satu potongan per ruas OSM per chunk): `id` (`"way/123#2"`), `osm_id`, `seq` (indeks potongan sepanjang ruas, dari
+  awal ke akhir), `continues_prev` / `continues_next`, `kind` (nilai `highway`/`waterway`), `width_m` (tag `width` atau default per tipe
+  di config), `points[[x,z],...]`, opsional `surface`, `name` (hanya jalan/sungai), `bridge`, `tunnel`, `layer`.
+  Ruas yang melintasi batas chunk dipotong TEPAT di garis batas; titik terakhir potongan `seq n` identik dengan titik pertama
+  `seq n+1` di chunk tetangga (`continues_next`/`continues_prev` true). Importer menyambung dengan kunci `(osm_id, seq)`.
+  Ruas yang dipotong batas desa menjadi beberapa bagian tak bersambung; `continues_*` false di ujung yang bukan batas chunk.
+  Simpul percabangan dan semua vertex asli dipertahankan (tanpa penyederhanaan). Jalan dipotong ke batas desa + margin 25 m.
+- **areas**: polygon landuse/natural/leisure/air dipotong per chunk: `category` (`landuse|natural|leisure|water`), `kind`, `area_m2`,
+  `rings` (ring luar lalu lubang). Saat ini kosong karena OSM belum memuatnya (GAME-54).
+- **buildings** (ditempatkan di chunk tempat centroid-nya; tidak dipotong, tidak diduplikasi): `id` stabil (`osm-way-123`,
+  `google-<sha1 WKT sumber>`, lihat catatan importer), `source` (`osm|google|microsoft`), `osm_id` (wajib bila `source=osm`), `confidence` (Google), `kind` (nilai
+  tag building, generik), `tier` (`A|B|C`), `landmark` (slug, bila terdaftar), `height_m`, `height_source`
+  (`tag_height|tag_levels|default_kind|default_area`), `levels` (int atau null), `centroid`, `area_m2`, `footprint` (ring luar CCW lalu lubang CW).
+  Ring polygon TIDAK mengulang titik awal di akhir. Tinggi: tag `height` > `building:levels` x 3 m > default per tipe > default per luas.
+  Tidak ada nama, alamat, atau tag pribadi apa pun (NFR-07; skema melarang field lain).
+- **index.json**: `chunks[]` (id, file, bytes, sha256, jumlah per layer), `totals`, `origin`, `boundary` (flag provisional),
+  `inputs` (sha256 masukan), `config`, dan `sources[]` berisi teks atribusi OSM (ODbL), Google Open Buildings (CC BY 4.0), Microsoft (ODbL)
+  untuk kredit game (NFR-06).
+
+### Tier (`data/tiers.json`)
+
+Default semua bangunan Tier C. Tier A (landmark manual) / B (modular kit) didaftar di `data/tiers.json` (`entries`: `{id, tier, landmark?}`,
+`id` = id bangunan di ekspor, divalidasi `schemas/tiers.schema.json`; id ganda atau field tak dikenal ditolak). File ini kosong sampai survei
+(GAME-8). Id yang terdaftar tetapi tidak ditemukan di ekspor dilaporkan di `tiers_unmatched`.
+
+### Footprint pelengkap (ADR-0003) dan dedup
+
+OSM sumber utama. Footprint Google/Microsoft diterima hanya bila lolos berurutan: baris valid, centroid di dalam batas, confidence Google
+>= 0,70 (Microsoft tidak punya skor, jadi lolos filter ini tetapi tetap kena filter lain), luas 15 sampai 3000 m2, bentuk wajar
+(luas/persegi panjang terkecil >= 0,55, rasio sisi <= 6), tidak tumpang tindih OSM, dan tidak tumpang tindih pelengkap yang sudah diterima
+(Google lebih dulu, confidence tinggi lebih dulu). "Tumpang tindih" = SALAH SATU dari: centroid salah satunya di dalam yang lain
+(`centroid`), irisan / luas terkecil >= 0,10 (`ratio`), luas irisan >= 4 m2 (`area`, agar mesh tidak saling tembus). Semua ambang di
+`export/config.py`; jumlah diterima dan ditolak per alasan (`overlap_osm_centroid`, `overlap_osm_ratio`, `overlap_supplementary_area`, dst.)
+ada di `export_report.json` (`buildings.supplement`).
+
+### Atribusi untuk kredit game (sumber tunggal: `export/config.py` `SOURCE_INFO`, ikut ke `index.json` `sources[]`)
+
+Keputusan pemilik produk: Google Open Buildings v3 (dual CC BY 4.0 / ODbL) diatribusikan sebagai ODbL 1.0, konsisten dengan data OSM
+gabungan. Mengganti lisensi cukup mengubah `SOURCE_INFO` dan blok ini (test menjaga keduanya sama).
+
+- Map data (c) OpenStreetMap contributors, available under the Open Database License (https://www.openstreetmap.org/copyright).
+- Building footprints: Google Open Buildings v3, via VIDA (source.coop), licensed under ODbL 1.0 (https://opendatacommons.org/licenses/odbl/1-0/).
+- Building footprints: Microsoft Global ML Building Footprints, via VIDA (source.coop), licensed under ODbL 1.0 (https://opendatacommons.org/licenses/odbl/1-0/).
+
+### Catatan untuk importer Unity (GAME-18)
+
+- Ekspor hanya berisi X dan Z. **Y diambil dari heightmap oleh importer.** Untuk alas bangunan di lereng, pakai Y = tinggi terrain
+  minimum pada sudut-sudut footprint (bukan di centroid) supaya tidak melayang di sisi bawah; lalu tinggi bangunan ditambahkan dari Y itu.
+- **Persimpangan dikenali dari kesamaan vertex**: ruas OSM yang bertemu di simpul yang sama punya koordinat titik identik (setelah dibulatkan
+  2 desimal). Titik potong batas chunk juga identik di kedua sisi (`continues_*`). Ekspor tidak memuat id simpul OSM.
+- Id bangunan pelengkap = `{source}-{12 hex pertama sha1 teks WKT sumber}`. Id berubah bila format/teks WKT di raw berubah (mis. unduhan ulang
+  dengan presisi lain); `data/tiers.json` yang merujuk id itu lalu muncul di `tiers_unmatched` dan harus diperbarui. Id OSM (`osm-way-<id>`) stabil.
+
+Modul: `export/{config,tags,geometry,lines,areas,buildings,assemble,schema,inputs,writer}.py`; test `tests/test_export.py`.
