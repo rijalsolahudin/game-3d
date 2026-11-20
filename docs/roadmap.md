@@ -21,6 +21,7 @@ Setiap milestone selesai bila **semua checklist tercentang dan Definition of Don
 
 ### 0.2 Survei & Data Mentah
 - [x] `[Data]` Tentukan polygon batas Desa Tumanggal + buffer (D1) dan titik origin
+- [ ] `[Data]` Ganti batas sementara (lingkaran 1,5 km) dengan batas administratif resmi desa + buffer 200 m
 - [ ] `[Data]` Unduh data OSM wilayah, audit kelengkapan jalan & footprint bangunan
 - [ ] `[Data]` Unduh DEMNAS untuk area cakupan
 - [ ] `[Data]` Unduh DEM sementara Copernicus GLO-30 (30 m) untuk area cakupan, dipakai sampai DEMNAS tersedia
