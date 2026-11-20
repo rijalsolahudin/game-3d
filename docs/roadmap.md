@@ -15,9 +15,9 @@ Setiap milestone selesai bila **semua checklist tercentang dan Definition of Don
 
 ### 0.1 Keputusan & Repo
 - [ ] Pemilik produk mengonfirmasi atau merevisi keputusan D1–D8 (PRD §2)
-- [ ] `[Ops]` Inisialisasi monorepo sesuai ARC §6, Git LFS (`.gitattributes`), `.gitignore` Unity + Node
-- [ ] `[Ops]` ADR-0001 "Pemilihan Tech Stack" di `docs/adr/`
-- [ ] `[Ops]` `docker-compose.yml` dengan `postgis/postgis` untuk pengembangan lokal
+- [x] `[Ops]` Inisialisasi monorepo sesuai ARC §6, Git LFS (`.gitattributes`), `.gitignore` Unity + Node
+- [x] `[Ops]` ADR-0001 "Pemilihan Tech Stack" di `docs/adr/`
+- [x] `[Ops]` `docker-compose.yml` dengan `postgis/postgis` untuk pengembangan lokal
 
 ### 0.2 Survei & Data Mentah
 - [ ] `[Data]` Tentukan polygon batas Desa Tumanggal + buffer (D1) dan titik origin
