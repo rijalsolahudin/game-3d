@@ -1,0 +1,63 @@
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Claude Code (lokal per developer) ---
+.claude/settings.local.json
+
+# --- Unity (client/) ---
+client/[Ll]ibrary/
+client/[Tt]emp/
+client/[Oo]bj/
+client/[Bb]uild/
+client/[Bb]uilds/
+client/[Ll]ogs/
+client/[Uu]ser[Ss]ettings/
+client/[Mm]emoryCaptures/
+client/[Rr]ecordings/
+client/*.csproj
+client/*.sln
+client/*.slnx
+client/*.user
+client/*.pidb
+client/*.booproj
+client/*.svd
+client/*.pdb
+client/*.mdb
+client/*.opendb
+client/*.VC.db
+client/sysinfo.txt
+client/crashlytics-build.properties
+client/Assets/AddressableAssetsData/*/*.bin*
+client/Assets/StreamingAssets/aa.meta
+client/Assets/StreamingAssets/aa/*
+
+# --- Node (server/, web/) ---
+node_modules/
+dist/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+npm-debug.log*
+pnpm-debug.log*
+
+# --- Python (pipeline/) ---
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# --- Pipeline data mentah (besar, sumber eksternal) ---
+pipeline/data/raw/*
+!pipeline/data/raw/.gitkeep
