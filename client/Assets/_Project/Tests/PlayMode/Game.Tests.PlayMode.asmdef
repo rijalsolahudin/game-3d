@@ -1,0 +1,28 @@
+{
+    "name": "Game.Tests.PlayMode",
+    "rootNamespace": "Game.Tests.PlayMode",
+    "references": [
+        "UnityEngine.TestRunner",
+        "Game.Core",
+        "Game.World",
+        "Game.Player",
+        "Game.Vehicles",
+        "Game.Exploration",
+        "Game.Net",
+        "Game.Save",
+        "Game.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
